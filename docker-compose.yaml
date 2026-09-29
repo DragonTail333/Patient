@@ -1,0 +1,18 @@
+volumes:
+  postgres-patients-data:
+
+services:
+  patients-postgres:
+    image: postgres:16-alpine
+    container_name: patients-postgres
+    env_file:
+      - .env
+    ports:
+      - "7000:5432"
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres-patients-data:/var/lib/postgresql/data
+  
