@@ -34,46 +34,50 @@
             txtPassword = new TextBox();
             btnLogin = new Button();
             lblError = new Label();
+            label1 = new Label();
             SuspendLayout();
             // 
             // lblLogin
             // 
             lblLogin.AutoSize = true;
-            lblLogin.Location = new Point(30, 30);
+            lblLogin.Location = new Point(30, 92);
             lblLogin.Name = "lblLogin";
-            lblLogin.Size = new Size(44, 15);
+            lblLogin.Size = new Size(55, 20);
             lblLogin.TabIndex = 0;
             lblLogin.Text = "Логин:";
             // 
             // txtLogin
             // 
-            txtLogin.Location = new Point(110, 27);
+            txtLogin.Location = new Point(110, 85);
+            txtLogin.Margin = new Padding(3, 4, 3, 4);
             txtLogin.Name = "txtLogin";
-            txtLogin.Size = new Size(220, 23);
+            txtLogin.Size = new Size(220, 27);
             txtLogin.TabIndex = 1;
             // 
             // lblPassword
             // 
             lblPassword.AutoSize = true;
-            lblPassword.Location = new Point(30, 70);
+            lblPassword.Location = new Point(30, 138);
             lblPassword.Name = "lblPassword";
-            lblPassword.Size = new Size(52, 15);
+            lblPassword.Size = new Size(65, 20);
             lblPassword.TabIndex = 2;
             lblPassword.Text = "Пароль:";
             // 
             // txtPassword
             // 
-            txtPassword.Location = new Point(110, 67);
+            txtPassword.Location = new Point(110, 131);
+            txtPassword.Margin = new Padding(3, 4, 3, 4);
             txtPassword.Name = "txtPassword";
             txtPassword.PasswordChar = '*';
-            txtPassword.Size = new Size(220, 23);
+            txtPassword.Size = new Size(220, 27);
             txtPassword.TabIndex = 3;
             // 
             // btnLogin
             // 
-            btnLogin.Location = new Point(110, 110);
+            btnLogin.Location = new Point(110, 239);
+            btnLogin.Margin = new Padding(3, 4, 3, 4);
             btnLogin.Name = "btnLogin";
-            btnLogin.Size = new Size(220, 32);
+            btnLogin.Size = new Size(182, 56);
             btnLogin.TabIndex = 4;
             btnLogin.Text = "Войти";
             btnLogin.UseVisualStyleBackColor = true;
@@ -82,18 +86,28 @@
             // lblError
             // 
             lblError.ForeColor = Color.Red;
-            lblError.Location = new Point(30, 150);
+            lblError.Location = new Point(43, 180);
             lblError.Name = "lblError";
-            lblError.Size = new Size(300, 35);
+            lblError.Size = new Size(300, 44);
             lblError.TabIndex = 5;
             lblError.TextAlign = ContentAlignment.TopCenter;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(12, 35);
+            label1.Name = "label1";
+            label1.Size = new Size(382, 20);
+            label1.TabIndex = 6;
+            label1.Text = "Чтобы войти в систему, введите свой логин и пароль";
             // 
             // LoginForm
             // 
             AcceptButton = btnLogin;
-            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(360, 200);
+            ClientSize = new Size(396, 308);
+            Controls.Add(label1);
             Controls.Add(lblError);
             Controls.Add(btnLogin);
             Controls.Add(txtPassword);
@@ -101,6 +115,7 @@
             Controls.Add(txtLogin);
             Controls.Add(lblLogin);
             FormBorderStyle = FormBorderStyle.FixedDialog;
+            Margin = new Padding(3, 4, 3, 4);
             MaximizeBox = false;
             Name = "LoginForm";
             StartPosition = FormStartPosition.CenterScreen;
@@ -117,5 +132,6 @@
         private TextBox txtPassword;
         private Button btnLogin;
         private Label lblError;
+        private Label label1;
     }
 }
