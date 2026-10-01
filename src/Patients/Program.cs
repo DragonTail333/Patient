@@ -57,6 +57,7 @@ internal static class Program
 
         services.AddTransient<RegistratorMainForm>(); // форма регистратора
         services.AddTransient<CreatePatientForm>(); // форма добавления нового пациента
+        services.AddTransient<CreateAppointmentForm>(); // форма назначения приёма 
         #endregion
 
         ServiceProvider = services.BuildServiceProvider();
