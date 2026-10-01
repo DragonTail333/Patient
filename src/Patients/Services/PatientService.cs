@@ -27,4 +27,20 @@ public class PatientService : IPatientService
         context.Patients.Add(patient);
         await context.SaveChangesAsync();
     }
+
+    public async Task<List<Patient>> GetAllPatientsAsync(string? cardNumberFilter = null)
+    {
+        using var context = _contextFactory.CreateDbContext();
+        var query = context.Patients.AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(cardNumberFilter))
+        {
+            query = query.Where(p => p.CardNumber.Contains(cardNumberFilter.Trim()));
+        }
+
+        return await query
+            .OrderBy(p => p.LastName)
+            .ThenBy(p => p.FirstName)
+            .ToListAsync();
+    }
 }
