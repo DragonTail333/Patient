@@ -43,13 +43,21 @@ internal static class Program
         });
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
         services.AddTransient<IAuthService, AuthService>();
+        services.AddTransient<IPatientService, PatientService>();
+        services.AddTransient<ISpecialtyService, SpecialtyService>();
+        services.AddTransient<IDoctorService, DoctorService>();
+        services.AddTransient<IAppointmentService, AppointmentService>();
 
         #endregion
 
-        #region Forms
+        #region forms
         services.AddTransient<LoginForm>(); // главная форма
+
         services.AddTransient<DoctorMainForm>(); // форма доктора
+
         services.AddTransient<RegistratorMainForm>(); // форма регистратора
+        services.AddTransient<CreatePatientForm>(); // форма добавления нового пациента
+        services.AddTransient<CreateAppointmentForm>(); // форма назначения приёма 
         #endregion
 
         ServiceProvider = services.BuildServiceProvider();
