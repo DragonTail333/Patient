@@ -43,6 +43,7 @@ internal static class Program
         });
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
         services.AddTransient<IAuthService, AuthService>();
+        services.AddTransient<IPatientService, PatientService>();
 
         #endregion
 
