@@ -44,6 +44,9 @@ internal static class Program
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
         services.AddTransient<IAuthService, AuthService>();
         services.AddTransient<IPatientService, PatientService>();
+        services.AddTransient<ISpecialtyService, SpecialtyService>();
+        services.AddTransient<IDoctorService, DoctorService>();
+        services.AddTransient<IAppointmentService, AppointmentService>();
 
         #endregion
 
