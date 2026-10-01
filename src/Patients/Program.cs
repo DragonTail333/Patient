@@ -46,10 +46,13 @@ internal static class Program
 
         #endregion
 
-        #region Forms
+        #region forms
         services.AddTransient<LoginForm>(); // главная форма
+
         services.AddTransient<DoctorMainForm>(); // форма доктора
+
         services.AddTransient<RegistratorMainForm>(); // форма регистратора
+        services.AddTransient<CreatePatientForm>(); // форма добавления нового пациента
         #endregion
 
         ServiceProvider = services.BuildServiceProvider();

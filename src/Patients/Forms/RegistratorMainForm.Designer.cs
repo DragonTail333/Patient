@@ -30,6 +30,7 @@
         {
             lblWelcome = new Label();
             btnLogout = new Button();
+            btnCreatePatient = new Button();
             SuspendLayout();
             // 
             // lblWelcome
@@ -51,11 +52,22 @@
             btnLogout.UseVisualStyleBackColor = true;
             btnLogout.Click += btnLogout_Click;
             // 
+            // btnCreatePatient
+            // 
+            btnCreatePatient.Location = new Point(12, 398);
+            btnCreatePatient.Name = "btnCreatePatient";
+            btnCreatePatient.Size = new Size(122, 40);
+            btnCreatePatient.TabIndex = 3;
+            btnCreatePatient.Text = "Добавить пациента";
+            btnCreatePatient.UseVisualStyleBackColor = true;
+            btnCreatePatient.Click += btnCreatePatient_Click;
+            // 
             // RegistratorMainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 450);
+            Controls.Add(btnCreatePatient);
             Controls.Add(btnLogout);
             Controls.Add(lblWelcome);
             Name = "RegistratorMainForm";
@@ -68,5 +80,6 @@
 
         private Label lblWelcome;
         private Button btnLogout;
+        private Button btnCreatePatient;
     }
 }
