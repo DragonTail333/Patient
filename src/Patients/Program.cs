@@ -47,6 +47,7 @@ internal static class Program
         services.AddTransient<ISpecialtyService, SpecialtyService>();
         services.AddTransient<IDoctorService, DoctorService>();
         services.AddTransient<IAppointmentService, AppointmentService>();
+        services.AddTransient<IExaminationService, ExaminationService>();
 
         #endregion
 
