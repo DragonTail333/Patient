@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Patients.Domain;
+using Patients.Services.Abstractions;
 using System.ComponentModel;
 namespace Patients.Forms;
 
@@ -133,14 +134,54 @@ public partial class CreateExaminationForm : Form
         return true;
     }
 
-    private void btnSave_Click(object sender, EventArgs e)
+    private async void btnSave_Click(object sender, EventArgs e)
     {
         if (!ValidateInputs())
         {
             return;
         }
 
-        DialogResult = DialogResult.OK;
+        if (_scopeFactory == null)
+        {
+            MessageBox.Show("Ошибка конфигурации сервисов.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
+
+        // Блокируем элементы управления на время асинхронного запроса
+        btnSave.Enabled = false;
+        btnCancel.Enabled = false;
+        lblError.Text = "Сохранение данных осмотра...";
+        lblError.ForeColor = Color.Blue;
+
+        try
+        {
+            // Инициализация доменной сущности
+            var examination = new Examination
+            {
+                AppointmentId = _appointmentId,
+                ExaminationDate = DateTime.UtcNow,
+                Complaints = Complaints,
+                Anamnesis = Anamnesis,
+                Diagnosis = Diagnosis,
+                Recommendations = Recommendations,
+                Prescriptions = _prescriptions.ToList(),
+                Referrals = _referrals.ToList()
+            };
+
+            using var scope = _scopeFactory.CreateScope();
+            var examinationService = scope.ServiceProvider.GetRequiredService<IExaminationService>();
+
+            await examinationService.CreateExaminationAsync(examination);
+
+            DialogResult = DialogResult.OK;
+        }
+        catch (Exception ex)
+        {
+            lblError.ForeColor = Color.Red;
+            lblError.Text = $"Ошибка при сохранении: {ex.Message}";
+            btnSave.Enabled = true;
+            btnCancel.Enabled = true;
+        }
     }
 
     #region prescription
