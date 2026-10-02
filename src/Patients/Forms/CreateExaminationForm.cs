@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Patients.Domain;
 using System.ComponentModel;
 namespace Patients.Forms;
 
@@ -9,16 +10,16 @@ public partial class CreateExaminationForm : Form
     private int _appointmentId;
     private string _patientFullName = string.Empty;
 
-    private readonly BindingList<PrescriptionItemDto> _prescriptions = new();
-    private readonly BindingList<ReferralItemDto> _referrals = new();
+    private readonly BindingList<Prescription> _prescriptions = new();
+    private readonly BindingList<Referral> _referrals = new();
 
-    // Экспонируем данные формы для последующего сохранения в сервисе
     public string Complaints => txtComplaints.Text.Trim();
     public string Anamnesis => txtAnamnesis.Text.Trim();
     public string Diagnosis => txtDiagnosis.Text.Trim();
     public string Recommendations => txtRecommendations.Text.Trim();
-    public IReadOnlyList<PrescriptionItemDto> Prescriptions => _prescriptions.ToList();
-    public IReadOnlyList<ReferralItemDto> Referrals => _referrals.ToList();
+
+    public IReadOnlyList<Prescription> Prescriptions => _prescriptions.ToList();
+    public IReadOnlyList<Referral> Referrals => _referrals.ToList();
 
     public CreateExaminationForm()
     {
@@ -142,23 +143,24 @@ public partial class CreateExaminationForm : Form
         DialogResult = DialogResult.OK;
     }
 
-    #region Управление рецептами
+    #region prescription
 
     private void btnAddPrescription_Click(object sender, EventArgs e)
     {
-        MessageBox.Show("Здесь будет открываться форма выписки рецепта.", "Заглушка", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        if (_scopeFactory == null) return;
 
-        _prescriptions.Add(new PrescriptionItemDto
+        using var scope = _scopeFactory.CreateScope();
+        var prescriptionForm = scope.ServiceProvider.GetRequiredService<CreatePrescriptionForm>();
+
+        if (prescriptionForm.ShowDialog(this) == DialogResult.OK && prescriptionForm.CreatedPrescription != null)
         {
-            MedicationName = "Парацетамол",
-            Dosage = "500 мг",
-            Instructions = "1 таблетка 3 раза в день"
-        });
+            _prescriptions.Add(prescriptionForm.CreatedPrescription);
+        }
     }
 
     private void btnDeletePrescription_Click(object sender, EventArgs e)
     {
-        if (dgvPrescriptions.CurrentRow?.DataBoundItem is PrescriptionItemDto selected)
+        if (dgvPrescriptions.CurrentRow?.DataBoundItem is Prescription selected)
         {
             _prescriptions.Remove(selected);
         }
@@ -166,22 +168,24 @@ public partial class CreateExaminationForm : Form
 
     #endregion
 
-    #region Управление направлениями
+    #region referrals
 
     private void btnAddReferral_Click(object sender, EventArgs e)
     {
-        MessageBox.Show("Здесь будет открываться форма создания направления.", "Заглушка", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        if (_scopeFactory == null) return;
 
-        _referrals.Add(new ReferralItemDto
+        using var scope = _scopeFactory.CreateScope();
+        var referralForm = scope.ServiceProvider.GetRequiredService<CreateReferralForm>();
+
+        if (referralForm.ShowDialog(this) == DialogResult.OK && referralForm.CreatedReferral != null)
         {
-            ReferralType = "Флюорография",
-            TargetDescription = "Плановый ежегодный осмотр"
-        });
+            _referrals.Add(referralForm.CreatedReferral);
+        }
     }
 
     private void btnDeleteReferral_Click(object sender, EventArgs e)
     {
-        if (dgvReferrals.CurrentRow?.DataBoundItem is ReferralItemDto selected)
+        if (dgvReferrals.CurrentRow?.DataBoundItem is Referral selected)
         {
             _referrals.Remove(selected);
         }
@@ -193,17 +197,4 @@ public partial class CreateExaminationForm : Form
     {
         DialogResult = DialogResult.Cancel;
     }
-}
-
-public class PrescriptionItemDto
-{
-    public string MedicationName { get; set; } = null!;
-    public string Dosage { get; set; } = null!;
-    public string Instructions { get; set; } = null!;
-}
-
-public class ReferralItemDto
-{
-    public string ReferralType { get; set; } = null!;
-    public string TargetDescription { get; set; } = null!;
 }
