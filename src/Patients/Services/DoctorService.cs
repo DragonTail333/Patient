@@ -13,6 +13,16 @@ public class DoctorService : IDoctorService
         _contextFactory = contextFactory;
     }
 
+    public async Task<Doctor?> GetDoctorByUserIdAsync(int id)
+    {
+        using var context = _contextFactory.CreateDbContext();
+        return await context.Doctors
+            .AsNoTracking()
+            .Include(d => d.User)
+            .Include(d => d.Specialty)
+            .FirstOrDefaultAsync(d => d.Id == id);
+    }
+
     public async Task<List<Doctor>> GetAllDoctorsAsync()
     {
         using var context = _contextFactory.CreateDbContext();
