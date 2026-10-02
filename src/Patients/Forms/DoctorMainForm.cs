@@ -135,24 +135,42 @@ public partial class DoctorMainForm : Form
         OpenExaminationForm();
     }
 
-    private void OpenExaminationForm()
+    private async void OpenExaminationForm()
     {
         if (SelectedAppointment == null || _scopeFactory == null) return;
 
         if (SelectedAppointment.Status == AppointmentStatus.Cancelled)
         {
-            MessageBox.Show("Нельзя провести осмотр по отменённой записи.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show("Нельзя провести или просмотреть осмотр по отменённой записи.", "Внимание", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             return;
         }
 
-        using var scope = _scopeFactory.CreateScope();
-        var examinationForm = scope.ServiceProvider.GetRequiredService<CreateExaminationForm>();
-        examinationForm.Initialize(SelectedAppointment.Id, SelectedAppointment.PatientFullName);
-
-        if (examinationForm.ShowDialog(this) == DialogResult.OK)
+        if (SelectedAppointment.Status == AppointmentStatus.Scheduled)
         {
-            // Обновить список приёмов после завершения осмотра
-            _ = LoadAppointmentsAsync();
+            using var scope = _scopeFactory.CreateScope();
+            var examinationForm = scope.ServiceProvider.GetRequiredService<CreateExaminationForm>();
+            examinationForm.Initialize(SelectedAppointment.Id, SelectedAppointment.PatientFullName);
+
+            if (examinationForm.ShowDialog(this) == DialogResult.OK)
+            {
+                await LoadAppointmentsAsync();
+            }
+        }
+        else if (SelectedAppointment.Status == AppointmentStatus.Completed)
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var examinationService = scope.ServiceProvider.GetRequiredService<IExaminationService>();
+
+            var examination = await examinationService.GetExaminationByAppointmentIdAsync(SelectedAppointment.Id);
+            if (examination == null)
+            {
+                MessageBox.Show("Не удалось найти протокол осмотра для данного приёма.", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var viewForm = scope.ServiceProvider.GetRequiredService<ViewExaminationForm>();
+            viewForm.Initialize(examination, SelectedAppointment.PatientFullName);
+            viewForm.ShowDialog(this);
         }
     }
 
@@ -161,11 +179,30 @@ public partial class DoctorMainForm : Form
         if (dgvAppointments.CurrentRow?.DataBoundItem is AppointmentGridItemDto selected)
         {
             SelectedAppointment = selected;
-            btnStartExamination.Enabled = selected.Status != AppointmentStatus.Cancelled;
+
+            switch (selected.Status)
+            {
+                case AppointmentStatus.Scheduled:
+                    btnStartExamination.Text = "Провести осмотр";
+                    btnStartExamination.Enabled = true;
+                    break;
+
+                case AppointmentStatus.Completed:
+                    btnStartExamination.Text = "Просмотреть осмотр";
+                    btnStartExamination.Enabled = true;
+                    break;
+
+                case AppointmentStatus.Cancelled:
+                default:
+                    btnStartExamination.Text = "Провести осмотр";
+                    btnStartExamination.Enabled = false;
+                    break;
+            }
         }
         else
         {
             SelectedAppointment = null;
+            btnStartExamination.Text = "Провести осмотр";
             btnStartExamination.Enabled = false;
         }
     }

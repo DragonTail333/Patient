@@ -47,4 +47,29 @@ public class ExaminationService : IExaminationService
 
         await context.SaveChangesAsync();
     }
+
+    public async Task<Examination?> GetExaminationByAppointmentIdAsync(int appointmentId)
+    {
+        using var context = await _contextFactory.CreateDbContextAsync();
+
+        var examination = await context.Examinations
+            .AsNoTracking()
+            .Include(e => e.Appointment)
+            .Include(e => e.Prescriptions)
+            .Include(e => e.Referrals)
+            .FirstOrDefaultAsync(e => e.AppointmentId == appointmentId);
+
+        if (examination == null)
+        {
+            return null;
+        }
+
+        if (examination.Appointment?.Status != AppointmentStatus.Completed)
+        {
+            throw new InvalidOperationException("Просмотр протокола осмотра доступен только для завершённых приёмов.");
+        }
+
+        return examination;
+    }
+
 }
