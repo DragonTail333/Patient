@@ -137,7 +137,7 @@ public partial class DoctorMainForm : Form
 
     private void OpenExaminationForm()
     {
-        if (SelectedAppointment == null) return;
+        if (SelectedAppointment == null || _scopeFactory == null) return;
 
         if (SelectedAppointment.Status == AppointmentStatus.Cancelled)
         {
@@ -145,7 +145,15 @@ public partial class DoctorMainForm : Form
             return;
         }
 
-        MessageBox.Show($"Открытие формы осмотра для пациента {SelectedAppointment.PatientFullName}", "Осмотр", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        using var scope = _scopeFactory.CreateScope();
+        var examinationForm = scope.ServiceProvider.GetRequiredService<CreateExaminationForm>();
+        examinationForm.Initialize(SelectedAppointment.Id, SelectedAppointment.PatientFullName);
+
+        if (examinationForm.ShowDialog(this) == DialogResult.OK)
+        {
+            // Обновить список приёмов после завершения осмотра
+            _ = LoadAppointmentsAsync();
+        }
     }
 
     private void UpdateSelectedAppointment()

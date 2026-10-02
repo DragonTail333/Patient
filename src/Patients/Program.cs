@@ -54,6 +54,7 @@ internal static class Program
         services.AddTransient<LoginForm>(); // главная форма
 
         services.AddTransient<DoctorMainForm>(); // форма доктора
+        services.AddTransient<CreateExaminationForm>(); // ворма создания осмотра для выбранного приёма
 
         services.AddTransient<RegistratorMainForm>(); // форма регистратора
         services.AddTransient<CreatePatientForm>(); // форма добавления нового пациента
