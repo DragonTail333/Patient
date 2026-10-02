@@ -22,7 +22,9 @@ public class AppointmentService : IAppointmentService
 
         return await context.Appointments
             .AsNoTracking()
+            .Include(a => a.Patient)
             .Where(a => a.DoctorId == doctorId && a.AppointmentDate >= startOfDay && a.AppointmentDate <= endOfDay)
+            .OrderBy(a => a.AppointmentDate)
             .ToListAsync();
     }
 
