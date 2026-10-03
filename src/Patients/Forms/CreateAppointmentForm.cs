@@ -223,16 +223,14 @@ public partial class CreateAppointmentForm : Form
             var selectedDate = DateOnly.FromDateTime(dtpAppointmentDate.Value);
             var selectedTime = TimeOnly.Parse(cmbTimeSlot.SelectedItem.ToString()!);
 
-            // Собираем локальную дату и время, затем приводим к Utc для timestamptz
             var localDateTime = selectedDate.ToDateTime(selectedTime);
-            var appointmentDateTimeUtc = DateTime.SpecifyKind(localDateTime, DateTimeKind.Utc);
 
             var appointment = new Appointment
             {
                 PatientId = _patientId,
                 DoctorId = SelectedDoctor.Id,
                 CreatedByUserId = _registrarUserId,
-                AppointmentDate = appointmentDateTimeUtc,
+                AppointmentDate = localDateTime,
                 Status = AppointmentStatus.Scheduled
             };
 

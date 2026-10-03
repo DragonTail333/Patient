@@ -7,6 +7,8 @@
 internal static class PostgresTypes
 {
     internal const string TimeStampTz = "timestamptz";
+
+    internal const string TimeStamp = "timestamp";
     internal const string Uuid = "uuid";
     internal const string SmallInt = "smallint";
     internal const string Text = "text";

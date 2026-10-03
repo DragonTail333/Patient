@@ -19,7 +19,7 @@ public class ExaminationConfiguration : IEntityTypeConfiguration<Examination>
 
         builder.Property(e => e.ExaminationDate)
             .HasColumnName("examination_date")
-            .HasColumnType(TimeStampTz);
+            .HasColumnType(TimeStamp);
 
         builder.Property(e => e.Complaints)
             .HasColumnName("complaints")

@@ -25,7 +25,7 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
 
         builder.Property(a => a.AppointmentDate)
             .HasColumnName("appointment_date")
-            .HasColumnType(TimeStampTz);
+            .HasColumnType(TimeStamp);
 
         builder.Property(a => a.Status)
             .HasColumnName("status")

@@ -4,4 +4,5 @@ public enum UserRole : byte
 {
     Registrator,
     Doctor,
+    ChiefDoctor
 }

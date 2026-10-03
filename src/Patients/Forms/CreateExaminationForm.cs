@@ -159,7 +159,7 @@ public partial class CreateExaminationForm : Form
             var examination = new Examination
             {
                 AppointmentId = _appointmentId,
-                ExaminationDate = DateTime.UtcNow,
+                ExaminationDate = DateTime.Now,
                 Complaints = Complaints,
                 Anamnesis = Anamnesis,
                 Diagnosis = Diagnosis,
