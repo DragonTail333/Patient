@@ -3,6 +3,7 @@ namespace Patients;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Patients.Data.Reports.Strategies;
 using Patients.Data.Seeders;
 using Patients.Domain.Enums;
 using Patients.Forms;
@@ -48,7 +49,16 @@ internal static class Program
         services.AddTransient<IDoctorService, DoctorService>();
         services.AddTransient<IAppointmentService, AppointmentService>();
         services.AddTransient<IExaminationService, ExaminationService>();
+        services.AddTransient<IReportService, ReportService>();
+        services.AddTransient<IReportExportService, ClosedXmlReportExportService>();
+        #endregion
 
+        #region report strategys
+
+        services.AddTransient<IReportStrategy, TopDiagnosesReportStrategy>();
+        services.AddTransient<IReportStrategy, DoctorWorkloadReportStrategy>();
+        services.AddTransient<IReportStrategy, ExaminationRegistryReportStrategy>();
+        services.AddTransient<IReportStrategy, PrescriptionsBySpecialtyReportStrategy>();
         #endregion
 
         #region forms
@@ -63,6 +73,8 @@ internal static class Program
         services.AddTransient<RegistratorMainForm>(); // форма регистратора
         services.AddTransient<CreatePatientForm>(); // форма добавления нового пациента
         services.AddTransient<CreateAppointmentForm>(); // форма назначения приёма 
+
+        services.AddTransient<ChiefDoctorMainForm>(); // форма для генерации отчётов главврачом
         #endregion
 
         ServiceProvider = services.BuildServiceProvider();
@@ -106,11 +118,13 @@ internal static class Program
             {
                 UserRole.Doctor => scope.ServiceProvider.GetRequiredService<DoctorMainForm>(),
                 UserRole.Registrator => scope.ServiceProvider.GetRequiredService<RegistratorMainForm>(),
+                UserRole.ChiefDoctor => scope.ServiceProvider.GetRequiredService<ChiefDoctorMainForm>(),
                 _ => throw new InvalidOperationException($"Неизвестная роль: {user.Role}")
             };
 
             if (mainForm is DoctorMainForm docForm) docForm.Initialize(user);
             if (mainForm is RegistratorMainForm regForm) regForm.Initialize(user);
+            if (mainForm is ChiefDoctorMainForm chiefForm) chiefForm.Initialize(user);
 
             // Запускаем рабочее окно
             Application.Run(mainForm);
@@ -120,6 +134,7 @@ internal static class Program
             {
                 DoctorMainForm d => d.IsLogoutRequested,
                 RegistratorMainForm r => r.IsLogoutRequested,
+                ChiefDoctorMainForm r => r.IsLogoutRequested,
                 _ => false
             };
 
