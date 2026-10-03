@@ -29,7 +29,6 @@ public partial class DoctorMainForm : Form
         Text = $"АРМ Врача — {user.LastName} {user.FirstName}";
         lblWelcome.Text = $"Загрузка профиля врача...";
 
-        dtpAppointmentDate.MinDate = DateTime.Today;
         dtpAppointmentDate.Value = DateTime.Today;
     }
 
